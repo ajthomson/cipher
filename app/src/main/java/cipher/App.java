@@ -17,6 +17,17 @@ public class App {
         final String value = args[1];
         final int shift = Integer.parseInt(args[2]);
 
+        // check that input is sensible
+        if (shift > 25) {
+            System.err.println("Shift must be 25 or less");
+            System.exit(1);
+        }
+
+        if (!value.matches("[A-Z]+")) {
+            System.err.println("value to encode/decode must be capital letters");
+            System.exit(1);
+        }
+
         Cipher cipher = new ShiftCipher(shift);
         if ("encode".equals(method)) {
             System.out.println(cipher.encode(value));
