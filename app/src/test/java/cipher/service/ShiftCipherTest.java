@@ -15,4 +15,14 @@ class ShiftCipherTest {
 
         assertThat(cipher.encode("A")).isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("HELLO with shift of 3 is encoded to KHOOR")
+    public void helloEncodedMatchesSpecWithGivenShift() {
+        final String expected = "KHOOR";
+        Cipher cipher = new ShiftCipher(3);
+
+        assertThat(cipher.encode("HELLO")).isEqualTo(expected);
+
+    }
 }
