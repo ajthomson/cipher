@@ -42,4 +42,26 @@ class ShiftCipherTest {
         Cipher cipher = new ShiftCipher(10);
         assertThat(cipher.encode("W")).isEqualTo("G");
     }
+
+    @Test
+    @DisplayName("D with a shift of 3 is decoded to A")
+    public void basicDecodeWithGivenShift() {
+        Cipher cipher = new ShiftCipher(3);
+        assertThat(cipher.decode("D")).isEqualTo("A");
+    }
+
+    @Test
+    @DisplayName("C with a shift of 5 is decoded to X")
+    public void decodeWithRotate() {
+        Cipher cipher = new ShiftCipher(5);
+        assertThat(cipher.decode("C")).isEqualTo("X");
+    }
+
+    @Test
+    @DisplayName("Ensure KHOOR decodes to HELLO with shift of 3")
+    public void decodeReferenceString() {
+        Cipher cipher = new ShiftCipher(3);
+        assertThat(cipher.decode("KHOOR")).isEqualTo("HELLO");
+    }
+
 }

@@ -12,14 +12,19 @@ public class ShiftCipher implements Cipher {
         String encodedString = "";
 
         for (int i=0; i<stringToEncode.length(); i++) {
-            encodedString += (char)shiftValue((int)stringToEncode.charAt(i));
+            encodedString += (char)shiftValue(stringToEncode.charAt(i));
         }
         return encodedString;
     }
 
     @Override
     public String decode(String stringToDecode) {
-        return null;
+        String decodedString = "";
+
+        for (int i=0; i<stringToDecode.length(); i++) {
+            decodedString += (char)unshiftValue(stringToDecode.charAt(i));
+        }
+        return decodedString;
     }
 
     private int shiftValue(int val) {
@@ -33,4 +38,17 @@ public class ShiftCipher implements Cipher {
 
         return shiftedValue;
     }
+
+    private int unshiftValue(int val) {
+        // shift letter back by configured value
+        int shiftedValue = val - shift;
+
+        // if we go past A, go back from Z
+        if (shiftedValue < 'A') {
+            shiftedValue = ('Z' + 1) - ('A' - shiftedValue);
+        }
+
+        return shiftedValue;
+    }
+
 }
