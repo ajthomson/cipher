@@ -1,7 +1,11 @@
 package cipher.service;
 
+import com.google.common.base.Joiner;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShiftCipher implements Cipher {
     private int shiftValue;
@@ -14,8 +18,6 @@ public class ShiftCipher implements Cipher {
         for (int i=0; i<26; i++) {
             int asciiCode = 65+i;
             Character charCode = (char) asciiCode;
-            System.out.println("setting up maps for " + charCode.toString());
-
             charToNum.put(charCode, i);
             numToChar.put(Integer.valueOf(i), charCode);
         }
@@ -27,30 +29,24 @@ public class ShiftCipher implements Cipher {
 
     @Override
     public String encode(String stringToEncode) {
-        String encoded = "";
+        List<Character> res = stringToEncode.chars().boxed()  // stream
+                .map(ch -> charToNum.get((char)ch.intValue()))
+                .map(code -> shiftCharacter(code))
+                .map(code -> numToChar.get(code))
+                .collect(Collectors.toList());
 
-        for (int i=0; i<stringToEncode.length(); i++) {
-            int currentCode = charToNum.get(stringToEncode.charAt(i));
-            int shiftedCode = shiftCharacter(currentCode);
-            Character newChar = numToChar.get(shiftedCode);
-            encoded += newChar;
-        }
-
-        return encoded;
+        return Joiner.on("").join(res);
     }
 
     @Override
+    public String decode(String stringToDecode) {
+        List<Character> res = stringToDecode.chars().boxed()  // stream
+                .map(ch -> charToNum.get((char)ch.intValue()))
+                .map(code -> unShiftCharacter(code))
+                .map(code -> numToChar.get(code))
+                .collect(Collectors.toList());
 
-    public String decode(String val) {
-        String decoded = "";
-
-        for (int i=0; i<val.length(); i++) {
-            int currentCode = charToNum.get(val.charAt(i));
-            int shiftedCode = unShiftCharacter(currentCode);
-            Character newChar = numToChar.get(shiftedCode);
-            decoded += newChar;
-        }
-        return decoded;
+        return Joiner.on("").join(res);
     }
 
     private int shiftCharacter(int code) {
