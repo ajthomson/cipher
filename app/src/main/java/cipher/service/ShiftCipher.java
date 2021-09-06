@@ -1,54 +1,73 @@
 package cipher.service;
 
-public class ShiftCipher implements Cipher {
-    private int shift;
+import java.util.HashMap;
+import java.util.Map;
 
-    public ShiftCipher(int valueToShift) {
-        shift = valueToShift;
+public class ShiftCipher implements Cipher {
+    private int shiftValue;
+
+    // maps to switch between character and associated number
+    static Map<Character, Integer> charToNum = new HashMap<>();
+    static Map<Integer, Character> numToChar = new HashMap<>();
+
+    static {
+        for (int i=0; i<26; i++) {
+            int asciiCode = 65+i;
+            Character charCode = (char) asciiCode;
+            System.out.println("setting up maps for " + charCode.toString());
+
+            charToNum.put(charCode, i);
+            numToChar.put(Integer.valueOf(i), charCode);
+        }
+    }
+
+    public ShiftCipher(int amountToShiftBy) {
+        shiftValue = amountToShiftBy;
     }
 
     @Override
     public String encode(String stringToEncode) {
-        String encodedString = "";
+        String encoded = "";
 
         for (int i=0; i<stringToEncode.length(); i++) {
-            encodedString += (char)shiftValue(stringToEncode.charAt(i));
+            int currentCode = charToNum.get(stringToEncode.charAt(i));
+            int shiftedCode = shiftCharacter(currentCode);
+            Character newChar = numToChar.get(shiftedCode);
+            encoded += newChar;
         }
-        return encodedString;
+
+        return encoded;
     }
 
     @Override
-    public String decode(String stringToDecode) {
-        String decodedString = "";
 
-        for (int i=0; i<stringToDecode.length(); i++) {
-            decodedString += (char)unshiftValue(stringToDecode.charAt(i));
+    public String decode(String val) {
+        String decoded = "";
+
+        for (int i=0; i<val.length(); i++) {
+            int currentCode = charToNum.get(val.charAt(i));
+            int shiftedCode = unShiftCharacter(currentCode);
+            Character newChar = numToChar.get(shiftedCode);
+            decoded += newChar;
         }
-        return decodedString;
+        return decoded;
     }
 
-    private int shiftValue(int val) {
-        // shift letter by configured value
-        int shiftedValue = val + shift;
-
-        // if we go past Z, rotate and add remaining
-        if (shiftedValue > 'Z') {
-            shiftedValue = ('A' - 1) + (shiftedValue - 'Z');
-        }
-
-        return shiftedValue;
-    }
-
-    private int unshiftValue(int val) {
-        // shift letter back by configured value
-        int shiftedValue = val - shift;
-
-        // if we go past A, go back from Z
-        if (shiftedValue < 'A') {
-            shiftedValue = ('Z' + 1) - ('A' - shiftedValue);
+    private int shiftCharacter(int code) {
+        int shiftedValue = code + shiftValue;
+        if (shiftedValue > 25) {
+            shiftedValue = shiftedValue - 25 - 1;
         }
 
         return shiftedValue;
     }
 
+    private int unShiftCharacter(int code) {
+        int shiftedValue = code - shiftValue;
+        if (shiftedValue < 0) {
+            shiftedValue = 25 + shiftedValue + 1;
+        }
+
+        return shiftedValue;
+    }
 }
