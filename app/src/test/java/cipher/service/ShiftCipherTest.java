@@ -9,11 +9,8 @@ class ShiftCipherTest {
     @Test
     @DisplayName("A with a shift of 3 is encoded to D")
     public void encodeAWithGivenShift() {
-
-        final String expected = "D";
         Cipher cipher = new ShiftCipher(3);
-
-        assertThat(cipher.encode("A")).isEqualTo(expected);
+        assertThat(cipher.encode("A")).isEqualTo("D");
     }
 
     @Test
@@ -23,6 +20,26 @@ class ShiftCipherTest {
         Cipher cipher = new ShiftCipher(3);
 
         assertThat(cipher.encode("HELLO")).isEqualTo(expected);
+    }
 
+    @Test
+    @DisplayName("Z shifted by 1 rotates to A")
+    public void shiftOf1WithZRotates() {
+        Cipher cipher = new ShiftCipher(1);
+        assertThat(cipher.encode("Z")).isEqualTo("A");
+    }
+
+    @Test
+    @DisplayName("Z shifted by 5 rotates to E")
+    public void shiftRotatesUsingLargerShiftValue() {
+        Cipher cipher = new ShiftCipher(5);
+        assertThat(cipher.encode("Z")).isEqualTo("E");
+    }
+
+    @Test
+    @DisplayName("Shift of mid level letter causing to move past Z rotates")
+    public void shiftFromMidLevelLetterRotates() {
+        Cipher cipher = new ShiftCipher(10);
+        assertThat(cipher.encode("W")).isEqualTo("G");
     }
 }

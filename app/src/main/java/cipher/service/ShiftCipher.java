@@ -23,6 +23,14 @@ public class ShiftCipher implements Cipher {
     }
 
     private int shiftValue(int val) {
-        return val + shift;
+        // shift letter by configured value
+        int shiftedValue = val + shift;
+
+        // if we go past Z, rotate and add remaining
+        if (shiftedValue > 'Z') {
+            shiftedValue = ('A' - 1) + (shiftedValue - 'Z');
+        }
+
+        return shiftedValue;
     }
 }
